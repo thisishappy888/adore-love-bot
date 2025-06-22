@@ -8,6 +8,6 @@ class Form(StatesGroup):
     bio = State()
     photo = State()
 
-class PhotoChange(StatesGroup):
+class ChangeForm(StatesGroup):
     photo = State()
     bio = State()

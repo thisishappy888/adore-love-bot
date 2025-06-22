@@ -4,7 +4,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from keyboards import reply
-from utils.states import Form, PhotoChange
+from utils.states import Form, ChangeForm
 
 import sqlite3
 
@@ -40,11 +40,11 @@ async def change_profile(message: Message, state: FSMContext):
 
 @router.message(F.text.lower() == "изменить фото/видео")
 async def change_profile(message: Message, state: FSMContext):
-    await state.set_state(PhotoChange.photo)
+    await state.set_state(ChangeForm.photo)
     await message.answer("Отправьте фото")
     
 
-@router.message(PhotoChange.photo, F.photo)
+@router.message(ChangeForm.photo, F.photo)
 async def form_photo(message: Message, state: FSMContext):
     photo_file_id = message.photo[-1].file_id
     data = await state.get_data()
@@ -81,11 +81,11 @@ async def form_photo(message: Message, state: FSMContext):
 
 @router.message(F.text.lower() == "изменить текст анкеты")
 async def change_profile(message: Message, state: FSMContext):
-    await state.set_state(PhotoChange.bio)
+    await state.set_state(ChangeForm.bio)
     await message.answer("Расскажи о себе")
     
 
-@router.message(PhotoChange.bio)
+@router.message(ChangeForm.bio)
 async def form_photo(message: Message, state: FSMContext):
     await state.update_data(bio=message.text)
     data = await state.get_data()
