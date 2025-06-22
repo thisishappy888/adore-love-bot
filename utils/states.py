@@ -7,3 +7,6 @@ class Form(StatesGroup):
     gender = State()
     bio = State()
     photo = State()
+
+class PhotoChange(StatesGroup):
+    photo = State()

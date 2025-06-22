@@ -37,7 +37,7 @@ async def get_random_profile(user_id):
         profile = cursor.fetchone()  
         return profile 
         
-@router.message(Command('view'))
+@router.message(F.text.lower() == "смотреть анкеты")
 async def view_profiles(message: Message, state: FSMContext):
     profile = await get_random_profile(message.from_user.id)
 
@@ -46,10 +46,9 @@ async def view_profiles(message: Message, state: FSMContext):
         return 
 
     response = (
-        f"Имя: {profile[2]}\n"
-        f"Возраст: {profile[3]}\n"
-        f"Пол: {profile[4]}\n"
-        f"О себе: {profile[5]}\n"
+        f"{profile[2]}, "
+        f"{profile[3]} - "
+        f"{profile[5]}"
     )
     
     await message.answer_photo(profile[6], caption=response, reply_markup=inline.main)
@@ -131,10 +130,9 @@ async def form_photo(message: Message, state: FSMContext):
         print(profile)
         print(type(profile))
         response = (
-            f"Имя: {profile[2]}\n"
-            f"Возраст: {profile[3]}\n"
-            f"Пол: {profile[4]}\n"
-            f"О себе: {profile[5]}\n"
+            f"{profile[2]}, "
+            f"{profile[3]} - "
+            f"{profile[5]}"
         )
         await message.answer_photo(profile[6], caption=response)
     else:

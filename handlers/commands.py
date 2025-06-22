@@ -4,7 +4,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from keyboards import reply
-from utils.states import Form
+from utils.states import Form, PhotoChange
 
 import sqlite3
 
@@ -22,11 +22,11 @@ async def start(message: Message, state: FSMContext):
         print(profile)
         print(type(profile))
         response = (
-            f"Имя: {profile[2]}\n"
-            f"Возраст: {profile[3]}\n"
-            f"Пол: {profile[4]}\n"
-            f"О себе: {profile[5]}\n"
+            f"{profile[2]}, "
+            f"{profile[3]} - "
+            f"{profile[5]}"
         )
+        await message.answer("Так выглядит твоя анкета:")
         await message.answer_photo(profile[6], caption=response, reply_markup=reply.main)
     else:
         await state.set_state(Form.name)
@@ -36,4 +36,43 @@ async def start(message: Message, state: FSMContext):
 async def change_profile(message: Message, state: FSMContext):
     await state.set_state(Form.name)
     await message.answer("Введите имя")
+
+
+@router.message(F.text.lower() == "изменить фото/видео")
+async def change_profile(message: Message, state: FSMContext):
+    await state.set_state(PhotoChange.photo)
+    await message.answer("Отправьте фото")
     
+
+@router.message(PhotoChange.photo, F.photo)
+async def form_photo(message: Message, state: FSMContext):
+    photo_file_id = message.photo[-1].file_id
+    data = await state.get_data()
+
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+
+        cursor.execute("""UPDATE profiles SET photo_file_id = ?
+                       WHERE user_id = ?""", (photo_file_id, message.from_user.id))
+
+        
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM profiles WHERE user_id = ?', (message.from_user.id,))
+        profile = cursor.fetchone()
+
+    if profile:
+        print(profile)
+        print(type(profile))
+        response = (
+            f"{profile[2]}, "
+            f"{profile[3]} - "
+            f"{profile[5]}"
+        )
+        
+        await message.answer("Так выглядит твоя анкета:")
+        await message.answer_photo(profile[6], caption=response)
+
+    await state.clear()
+
+    print(data)
