@@ -1,11 +1,9 @@
 from aiogram.types import (
-    ReplyKeyboardMarkup,
-    KeyboardButton,
     InlineKeyboardButton,
     InlineKeyboardMarkup
 )
 
-main_kb = InlineKeyboardMarkup(
+main = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(text="👍", callback_data="like"),
