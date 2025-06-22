@@ -10,3 +10,4 @@ class Form(StatesGroup):
 
 class PhotoChange(StatesGroup):
     photo = State()
+    bio = State()

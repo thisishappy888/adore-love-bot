@@ -69,10 +69,51 @@ async def form_photo(message: Message, state: FSMContext):
             f"{profile[3]} - "
             f"{profile[5]}"
         )
-        
+
         await message.answer("Так выглядит твоя анкета:")
         await message.answer_photo(profile[6], caption=response)
 
     await state.clear()
 
     print(data)
+
+
+
+@router.message(F.text.lower() == "изменить текст анкеты")
+async def change_profile(message: Message, state: FSMContext):
+    await state.set_state(PhotoChange.bio)
+    await message.answer("Расскажи о себе")
+    
+
+@router.message(PhotoChange.bio)
+async def form_photo(message: Message, state: FSMContext):
+    await state.update_data(bio=message.text)
+    data = await state.get_data()
+
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+
+        cursor.execute("""UPDATE profiles SET bio = ?
+                       WHERE user_id = ?""", (data['bio'], message.from_user.id))
+
+        
+    with sqlite3.connect("database.db") as db:
+        cursor = db.cursor()
+        cursor.execute('SELECT * FROM profiles WHERE user_id = ?', (message.from_user.id,))
+        profile = cursor.fetchone()
+
+    if profile:
+        print(profile)
+        print(type(profile))
+        response = (
+            f"{profile[2]}, "
+            f"{profile[3]} - "
+            f"{profile[5]}"
+        )
+        
+        await message.answer("Так выглядит твоя анкета:")
+        await message.answer_photo(profile[6], caption=response)
+
+    await state.clear()
+
+    print(data)   

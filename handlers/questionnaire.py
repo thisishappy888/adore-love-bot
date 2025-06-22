@@ -141,3 +141,4 @@ async def form_photo(message: Message, state: FSMContext):
     await state.clear()
 
     print(data)
+
