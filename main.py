@@ -2,14 +2,11 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 from handlers import commands, questionnaire, database
-
-import os
-
-bot_token = os.environ.get("BOT_TOKEN")
+from config_reader import config
 
 
 async def main():
-    bot = Bot(bot_token)
+    bot = Bot(config.bot_token.get_secret_value())
     dp = Dispatcher()
 
     dp.include_routers(commands.router, questionnaire.router, database.router)
