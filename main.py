@@ -1,7 +1,7 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 
-from handlers import commands, questionnaire
+from handlers import commands, questionnaire, database
 
 import os
 
@@ -15,6 +15,7 @@ async def main():
     dp.include_routers(
         commands.router,
         questionnaire.router,
+        database.router
     )
 
     await bot.delete_webhook(drop_pending_updates=True)
