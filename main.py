@@ -12,11 +12,7 @@ async def main():
     bot = Bot(bot_token)
     dp = Dispatcher()
 
-    dp.include_routers(
-        commands.router,
-        questionnaire.router,
-        database.router
-    )
+    dp.include_routers(commands.router, questionnaire.router, database.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

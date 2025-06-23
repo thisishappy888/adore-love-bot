@@ -4,9 +4,10 @@ from aiogram import Router
 router = Router()
 
 with sqlite3.connect("database.db") as db:
-    cursor = db.cursor() 
+    cursor = db.cursor()
 
-    cursor.execute('''
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS profiles (
             user_id INTEGER PRIMARY KEY,
             username TEXT,
@@ -16,26 +17,33 @@ with sqlite3.connect("database.db") as db:
             bio TEXT,
             photo_file_id TEXT
         )
-    ''')
+    """
+    )
 
-    cursor.execute('''
+    cursor.execute(
+        """
                    CREATE TABLE IF NOT EXISTS likes (
                    from_user INTEGER,
                    to_user INTEGER,
                    UNIQUE(from_user, to_user)
                    )
-                   ''')
-    cursor.execute('''
+                   """
+    )
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS dislikes (
         from_user INTEGER,
         to_user INTEGER,
         timestamp DATETIME
         )
-    ''')
+    """
+    )
 
-    cursor.execute('''
+    cursor.execute(
+        """
     CREATE TABLE IF NOT EXISTS timeouts (
         user_id INTEGER PRIMARY KEY,
         timeout_until DATETIME
     )
-    ''')
+    """
+    )
